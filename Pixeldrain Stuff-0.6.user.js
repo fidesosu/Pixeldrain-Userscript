@@ -4,7 +4,7 @@
 // @version      0.6
 // @description  Saves the current time of a video on Pixeldrain.com and stuff
 // @author       fides
-// @match        https://pixeldrain.com/*
+// @match        https://pixeldrain.com/u/*
 // @grant        GM_registerMenuCommand
 // ==/UserScript==
 
