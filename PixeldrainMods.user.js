@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Pixeldrain Stuff
 // @namespace    http://tampermonkey.net/
-// @version      0.6
+// @version      0.6.1
 // @description  Saves the current time of a video on Pixeldrain.com and stuff
 // @author       fides
 // @match        https://pixeldrain.com/u/*
@@ -99,6 +99,7 @@
 
         // GUI Root
         const root = document.createElement("div");
+        root.style.zIndex = "9999";
         root.setAttribute("id", "root"); // Add id for easy reference
         root.style.position = "fixed";
         root.style.top = "20px";
