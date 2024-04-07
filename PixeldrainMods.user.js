@@ -1,8 +1,8 @@
 // ==UserScript==
-// @name         Pixeldrain Stuff
+// @name         Pixeldrain Mods
 // @namespace    http://tampermonkey.net/
-// @version      0.6.1
-// @description  Saves the current time of a video on Pixeldrain.com and stuff
+// @version      0.7.0
+// @description  Saves the current time of a video on Pixeldrain.com and does other stuff as well
 // @author       fides
 // @match        https://pixeldrain.com/u/*
 // @grant        GM_registerMenuCommand
@@ -11,26 +11,54 @@
 (function() {
     'use strict';
 
-    let guiContainer = null;
+    console.log("Pixeldrain Mods script started.");
 
-    // Load saved settings from localStorage
+    // Variables
+    let guiContainer = null;
     let autoSaveInterval = parseInt(localStorage.getItem('autoSaveInterval')) || 1000; // Default 1 second
     let volumeLevel = parseFloat(localStorage.getItem('volumeLevel')) || 1.0; // Default volume level
-    let defVolState = localStorage.getItem('defVolState') || "disabled"; // Default to "enabled"
-    let realTimeUpState = localStorage.getItem('realTimeUpState') || "disabled"; // Default to "enabled"
+    let defVolState = localStorage.getItem('defVolState') || "disabled"; // Default to "disabled"
+    let realTimeUpState = localStorage.getItem('realTimeUpState') || "disabled"; // Default to "disabled"
+    let savingState = localStorage.getItem('savingState') || "enabled"; // Default to "enabled"
+    let videoElement = document.querySelector('video');
+    let autoSaveTimer = setInterval(saveVideoTime, autoSaveInterval);
+
+    // Check if a video is present on the page
+    if (videoElement !== null && savingState === "enabled") {
+        console.log("Video element found on page. Video time tracking enabled.");
+        // Load the saved video time
+        loadVideoTime();
+
+        // Set the volume level
+        videoElement.volume = volumeLevel;
+
+        // Add event listeners for real-time updates
+        if (realTimeUpState === "enabled") {
+            console.log("Real-time updates enabled.");
+            videoElement.addEventListener('play', saveVideoTime);
+            videoElement.addEventListener('pause', saveVideoTime);
+            videoElement.addEventListener('timeupdate', saveVideoTime);
+        } else {
+            console.log("Real-time updates disabled.");
+        }
+    }
+    else {
+        console.error("ERROR: Couldn't load video time.\nREASON: No video element found on page or savingState option is disabled.");
+    }
 
     // Function to save the current time of the video
     function saveVideoTime() {
-        if (document.querySelector('video') != null) {
+        let savingState = localStorage.getItem('savingState'); // This makes the 'Video Time Tracking' setting work without refreshing the page
+        if (videoElement !== null && savingState === "enabled") {
             // Get the current video time
             var currentTime = document.querySelector('video').currentTime;
             // Get the unique key based on the URL
             var key = getKeyFromURL();
             // Save the current time in local storage with the unique key
             localStorage.setItem(key, currentTime);
-        }
-        else {
-            console.log("No video element found on page");
+            console.log("Video time saved:", currentTime, "seconds");
+        } else {
+            console.error("ERROR: Couldn't save video time.\nREASON: No video element found on page or savingState option is disabled.");
         }
     }
 
@@ -44,6 +72,7 @@
         if (savedTime !== null) {
             // Set the video time to the saved time
             document.querySelector('video').currentTime = parseFloat(savedTime);
+            console.log("Loaded saved video time:", savedTime, "seconds");
         }
     }
 
@@ -55,45 +84,15 @@
         return pathname.replace(/\//g, ''); // Remove slashes
     }
 
-    // Function to update auto-save interval
-    function updateAutoSaveInterval(interval) {
-        autoSaveInterval = interval;
-        clearInterval(autoSaveTimer);
-        autoSaveTimer = setInterval(saveVideoTime, autoSaveInterval);
-    }
-
-    // Function to update volume level
-    function updateVolumeLevel(volume) {
-        volumeLevel = volume;
-        document.querySelector('video').volume = volumeLevel;
-    }
-
-    // Auto-save the video time at specified intervals if real-time updates are disabled
-    let autoSaveTimer = setInterval(saveVideoTime, autoSaveInterval);
-
-    // Check if a video is present on the page
-    var videoElement = document.querySelector('video');
-    if (videoElement !== null) {
-        // Load the saved video time
-        loadVideoTime();
-
-        // Set the volume level
-        videoElement.volume = volumeLevel;
-
-        // Add event listeners for real-time updates
-        if (realTimeUpState = "enabled") {
-            videoElement.addEventListener('play', saveVideoTime);
-            videoElement.addEventListener('pause', saveVideoTime);
-            videoElement.addEventListener('timeupdate', saveVideoTime);
-        }
-    }
-
     // Function to create the UI
     function createUI() {
+        console.log("UI opened.");
+
         if (guiContainer) {
             // If GUI is already open, close it
             document.body.removeChild(guiContainer);
             guiContainer = null;
+            console.log("UI closed.");
             return;
         }
 
@@ -266,20 +265,49 @@
 
         realTimeUp.appendChild(realTimeUpBtn);
         container.appendChild(realTimeUp);
+
+        const savingStateContainer = document.createElement("div");
+        savingStateContainer.textContent = "Video Time Tracking"; // Initial text
+        savingStateContainer.style.position = "relative"; // Set position to relative
+        savingStateContainer.style.textAlign = "center";
+        savingStateContainer.style.lineHeight = "40px"; // Center text vertically
+        savingStateContainer.style.marginTop = "10px";
+        savingStateContainer.style.width = "calc(100% - 80px)";
+        savingStateContainer.style.height = "40px";
+        savingStateContainer.style.background = "#222";
+        savingStateContainer.style.borderRadius = "10px 0px 0px 10px";
+        savingStateContainer.style.userSelect = "none";
+
+        const savingStateButton = document.createElement("a");
+        savingStateButton.textContent = "Enabled"; // Initial text
+        savingStateButton.style.position = "absolute";
+        savingStateButton.style.right = "-80px";
+        savingStateButton.style.width = "80px";
+        savingStateButton.style.height = "40px";
+        savingStateButton.style.background = "#383838";
+        savingStateButton.style.borderRadius = "0px 10px 10px 0px";
+        savingStateButton.style.color = "#00FF00"; // Green color for "enabled" text
+        savingStateButton.style.textAlign = "center";
+        savingStateButton.style.lineHeight = "40px"; // Center text vertically
+        savingStateButton.style.cursor = "pointer";
+        savingStateButton.style.userSelect = "none";
+
+        savingStateButton.addEventListener("click", () => {
+            toggleButtonState(savingStateButton, 'savingState');
+        });
+
+        let savingState = localStorage.getItem('savingState');
+
+        if (savingState === "disabled") {
+            savingStateButton.textContent = "Disabled";
+            savingStateButton.style.color = "#FF0000"; // Red color for "disabled" text
+        }
+
+        savingStateContainer.appendChild(savingStateButton);
+        container.appendChild(savingStateContainer);
+
         document.body.appendChild(root);
         guiContainer = root;
-    }
-
-    // Function to toggle settings
-    function toggleSetting(setting) {
-        const button = document.getElementById(setting + "Button");
-        if (button.textContent === "Disable") {
-            button.textContent = "Enable";
-            // Add logic to disable setting
-        } else {
-            button.textContent = "Disable";
-            // Add logic to enable setting
-        }
     }
 
     // Function to toggle button state and save it to localStorage
@@ -288,10 +316,12 @@
             button.textContent = "Disabled";
             button.style.color = "#FF0000"; // Red color for "disabled" text
             localStorage.setItem(key, "disabled");
+            console.log("Setting", key, "to 'disabled'.");
         } else {
             button.textContent = "Enabled";
             button.style.color = "#00FF00"; // Green color for "enabled" text
             localStorage.setItem(key, "enabled");
+            console.log("Setting", key, "to 'enabled'.");
         }
     }
 
@@ -305,18 +335,24 @@
             // Set the volume level
             element.volume = volumeLevel;
         });
+        console.log("Volume set to:", volumeLevel);
     }
 
-    videoElement.addEventListener('volumechange', handleVolumeChange);
+    if (videoElement != null) {
+        videoElement.addEventListener('volumechange', handleVolumeChange);
+    }
+    else {
+        console.warn("No video element found. Volume change handler not attached.");
+    }
 
     function handleVolumeChange() {
         const newVolumeLevel = videoElement.volume;
         localStorage.setItem('volumeLevel', newVolumeLevel.toString());
+        console.log("Volume changed:", newVolumeLevel);
     }
 
     // Register user menu command to open the UI
     GM_registerMenuCommand("Open/Close Settings", () => {
         createUI();
     });
-
 })();
