@@ -15,7 +15,7 @@
 
     // Variables
     let guiContainer = null;
-    let autoSaveInterval = parseInt(localStorage.getItem('autoSaveInterval')) || 5000; // Default 5 second
+    let autoSaveInterval = parseInt(localStorage.getItem('autoSaveInterval')) || 5000; // Default 5 seconds
     let volumeLevel = parseFloat(localStorage.getItem('volumeLevel')) || 1.0; // Default volume level
     let defVolState = localStorage.getItem('defVolState') || "disabled"; // Default to "disabled"
     let realTimeUpState = localStorage.getItem('realTimeUpState') || "disabled"; // Default to "disabled"
