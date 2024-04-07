@@ -6,7 +6,7 @@ This UserScript, enhances the functionality of Pixeldrain.com by providing addit
 
 - **Save Video Time**: Automatically saves the current time of a video on Pixeldrain.com to allow users to resume playback from where they left off.
 - **Persistent Volume**: Allows users to set a persistent volume level for videos, ensuring consistent audio levels across different sessions.
-- ~~**Real-Time Saves**: Provides the option to enable real-time updates for saving video time, ensuring more accurate playback tracking.~~
+- **Real-Time Saves**: Provides the option to enable real-time updates for saving video time, ensuring more accurate playback tracking. **(This doesn't really affect the user-experience at all)**
 
 ## Usage
 
