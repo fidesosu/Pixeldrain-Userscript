@@ -13,7 +13,7 @@ This UserScript, enhances the functionality of Pixeldrain.com by providing addit
 1. Install a userscript manager such as Tampermonkey.
 2. Copy the script provided into a new script in Tampermonkey.
 3. Save the script and navigate to Pixeldrain.com.
-4. The script will launch when you open pixeldrain.com website. All of the toggleable features are disabled by default. 
+4. The script will launch when you open pixeldrain.com website. All of the toggleable features are disabled by default (Except 'Video Time Tracking').
 
 ## User Interface (UI)
 
