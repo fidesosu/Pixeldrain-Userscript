@@ -23,8 +23,3 @@ This UserScript, enhances the functionality of Pixeldrain.com by providing addit
 ## Work in Progress (WIP)
 
 - Some features are missing from the UI, but they will be added in the future.
-
-## Version History
-
-- **Version 0.6**: Initial Github release with basic functionality.
-
