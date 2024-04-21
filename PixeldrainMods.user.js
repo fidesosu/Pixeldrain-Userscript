@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Pixeldrain Mods
 // @namespace    http://tampermonkey.net/
-// @version      0.7.0
+// @version      0.8.0
 // @description  Saves the current time of a video on Pixeldrain.com and does other stuff as well
 // @author       fides
 // @match        https://pixeldrain.com/u/*
@@ -31,16 +31,6 @@
 
         // Set the volume level
         videoElement.volume = volumeLevel;
-
-        // Add event listeners for real-time updates
-        if (realTimeUpState === "enabled") {
-            console.log("Real-time updates enabled.");
-            videoElement.addEventListener('play', saveVideoTime);
-            videoElement.addEventListener('pause', saveVideoTime);
-            videoElement.addEventListener('timeupdate', saveVideoTime);
-        } else {
-            console.log("Real-time updates disabled.");
-        }
     }
     else {
         console.error("ERROR: Couldn't load video time.\nREASON: No video element found on page or savingState option is disabled.");
@@ -48,6 +38,7 @@
 
     // Function to save the current time of the video
     function saveVideoTime() {
+        checkRealTimeUpState();
         let savingState = localStorage.getItem('savingState'); // This makes the 'Video Time Tracking' setting work without refreshing the page
         if (videoElement !== null && savingState === "enabled") {
             // Get the current video time
@@ -59,6 +50,24 @@
             console.log("Video time saved:", currentTime, "seconds");
         } else {
             console.error("ERROR: Couldn't save video time.\nREASON: No video element found on page or savingState option is disabled.");
+        }
+    }
+
+    // Function to toggle real-time updates
+    function checkRealTimeUpState() {
+        let realTimeUpState = localStorage.getItem('realTimeUpState'); // Check realTimeUpState item
+        if (realTimeUpState === "enabled") {
+            console.log("Real-time updates enabled.");
+            // Add event listeners
+            videoElement.addEventListener('play', saveVideoTime);
+            videoElement.addEventListener('pause', saveVideoTime);
+            videoElement.addEventListener('timeupdate', saveVideoTime);
+        } else {
+            console.log("Real-time updates disabled.");
+            // Remove event listeners if already added
+            videoElement.removeEventListener('play', saveVideoTime);
+            videoElement.removeEventListener('pause', saveVideoTime);
+            videoElement.removeEventListener('timeupdate', saveVideoTime);
         }
     }
 
@@ -254,6 +263,7 @@
 
         realTimeUpBtn.addEventListener("click", () => {
             toggleButtonState(realTimeUpBtn, 'realTimeUpState');
+            checkRealTimeUpState();
         });
 
         let realTimeUpState = localStorage.getItem('realTimeUpState');
