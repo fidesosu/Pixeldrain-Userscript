@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Pixeldrain Mods
 // @namespace    http://tampermonkey.net/
-// @version      0.9.0
+// @version      0.10.0
 // @description  Saves the current time of a video on Pixeldrain.com and does other stuff as well
 // @author       fides
 // @match        https://pixeldrain.com/u/*
@@ -35,9 +35,33 @@
 
                 // Set the volume level
                 videoElement.volume = volumeLevel;
+
+                // Add spacebar focus toggle feature
+                addSpacebarFocusToggle();
             }
             else {
                 console.error("ERROR: Couldn't load video time.\nREASON: No video element found on page or savingState option is disabled.");
+            }
+
+            // Function to add spacebar focus toggle feature
+            function addSpacebarFocusToggle() {
+                const videoElements = document.querySelectorAll('video');
+
+                for (const video of videoElements) {
+                    video.addEventListener('focus', () => {
+                        document.addEventListener('keydown', handleSpacebar, true);
+                    });
+
+                    video.addEventListener('blur', () => {
+                        document.removeEventListener('keydown', handleSpacebar, true);
+                    });
+                }
+            }
+
+            function handleSpacebar(event) {
+                if (event.keyCode === 32 && document.activeElement.tagName === 'VIDEO') {
+                    event.preventDefault();
+                }
             }
 
             // Function to save the current time of the video
@@ -165,214 +189,214 @@
                 closeButton.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-x" viewBox="0 0 16 16">
   <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708"/>
 </svg>`;
-        closeButton.style.position = "fixed";
-        closeButton.style.top = "8px";
-        closeButton.style.right = "5px";
-        closeButton.style.background = "transparent";
-        closeButton.style.border = "none";
-        closeButton.style.width = "32px";
-        closeButton.style.height = "32px";
-        closeButton.style.color = "#999";
-        closeButton.style.fontWeight = "bold";
-        closeButton.addEventListener("click", () => {
-            document.body.removeChild(root);
-            guiContainer = null;
-        });
+                closeButton.style.position = "fixed";
+                closeButton.style.top = "8px";
+                closeButton.style.right = "5px";
+                closeButton.style.background = "transparent";
+                closeButton.style.border = "none";
+                closeButton.style.width = "32px";
+                closeButton.style.height = "32px";
+                closeButton.style.color = "#999";
+                closeButton.style.fontWeight = "bold";
+                closeButton.addEventListener("click", () => {
+                    document.body.removeChild(root);
+                    guiContainer = null;
+                });
 
-        closeButton.style.transition = "color 0.15s ease"; // Add transition for smooth effect
+                closeButton.style.transition = "color 0.15s ease"; // Add transition for smooth effect
 
-        // Add hover effect using inline CSS
-        closeButton.style.cursor = "pointer";
-        closeButton.addEventListener("mouseenter", () => {
-            closeButton.style.color = "#fff"; // Change color on hover
-        });
-        closeButton.addEventListener("mouseleave", () => {
-            closeButton.style.color = "#999"; // Change color back to default
-        });
+                // Add hover effect using inline CSS
+                closeButton.style.cursor = "pointer";
+                closeButton.addEventListener("mouseenter", () => {
+                    closeButton.style.color = "#fff"; // Change color on hover
+                });
+                closeButton.addEventListener("mouseleave", () => {
+                    closeButton.style.color = "#999"; // Change color back to default
+                });
 
-        root.appendChild(closeButton);
-        root.appendChild(container);
+                root.appendChild(closeButton);
+                root.appendChild(container);
 
-        const defVol = document.createElement("div");
-        defVol.textContent = "Persistent Volume"; // Initial text
-        defVol.style.position = "relative"; // Set position to relative
-        defVol.style.textAlign = "center";
-        defVol.style.lineHeight = "40px"; // Center text vertically
-        defVol.style.width = "calc(100% - 80px)";
-        defVol.style.height = "40px";
-        defVol.style.background = "#222";
-        defVol.style.borderRadius = "10px 0px 0px 10px";
-        defVol.style.userSelect = "none";
+                const defVol = document.createElement("div");
+                defVol.textContent = "Persistent Volume"; // Initial text
+                defVol.style.position = "relative"; // Set position to relative
+                defVol.style.textAlign = "center";
+                defVol.style.lineHeight = "40px"; // Center text vertically
+                defVol.style.width = "calc(100% - 80px)";
+                defVol.style.height = "40px";
+                defVol.style.background = "#222";
+                defVol.style.borderRadius = "10px 0px 0px 10px";
+                defVol.style.userSelect = "none";
 
-        const defVolBtn = document.createElement("a");
-        defVolBtn.textContent = "Enabled"; // Initial text
-        defVolBtn.style.position = "absolute"; // Set position to absolute
-        defVolBtn.style.right = "-80px";
-        defVolBtn.style.width = "80px";
-        defVolBtn.style.height = "40px";
-        defVolBtn.style.background = "#383838";
-        defVolBtn.style.borderRadius = "0px 10px 10px 0px";
-        defVolBtn.style.color = "#00FF00"; // Green color for "enabled" text
-        defVolBtn.style.textAlign = "center";
-        defVolBtn.style.lineHeight = "40px"; // Center text vertically
-        defVolBtn.style.cursor = "pointer";
-        defVolBtn.style.userSelect = "none";
+                const defVolBtn = document.createElement("a");
+                defVolBtn.textContent = "Enabled"; // Initial text
+                defVolBtn.style.position = "absolute"; // Set position to absolute
+                defVolBtn.style.right = "-80px";
+                defVolBtn.style.width = "80px";
+                defVolBtn.style.height = "40px";
+                defVolBtn.style.background = "#383838";
+                defVolBtn.style.borderRadius = "0px 10px 10px 0px";
+                defVolBtn.style.color = "#00FF00"; // Green color for "enabled" text
+                defVolBtn.style.textAlign = "center";
+                defVolBtn.style.lineHeight = "40px"; // Center text vertically
+                defVolBtn.style.cursor = "pointer";
+                defVolBtn.style.userSelect = "none";
 
-        // Add click event listeners to buttons
-        defVolBtn.addEventListener("click", () => {
-            toggleButtonState(defVolBtn, 'defVolState');
+                // Add click event listeners to buttons
+                defVolBtn.addEventListener("click", () => {
+                    toggleButtonState(defVolBtn, 'defVolState');
 
-            // Check if the setting is enabled
-            if (defVolBtn.textContent === "Enabled") {
-                // Get the volume level from localStorage
-                const volumeLevel = parseFloat(localStorage.getItem('volumeLevel')) || 1.0; // Default volume level to 1.0 if not found
+                    // Check if the setting is enabled
+                    if (defVolBtn.textContent === "Enabled") {
+                        // Get the volume level from localStorage
+                        const volumeLevel = parseFloat(localStorage.getItem('volumeLevel')) || 1.0; // Default volume level to 1.0 if not found
 
-                // Set the volume to the specified value
-                setVolume(volumeLevel);
+                        // Set the volume to the specified value
+                        setVolume(volumeLevel);
+                    }
+                });
+
+                let defVolState = localStorage.getItem('defVolState');
+
+                // Set initial button states
+                if (defVolState === "disabled") {
+                    defVolBtn.textContent = "Disabled";
+                    defVolBtn.style.color = "#FF0000"; // Red color for "disabled" text
+                }
+
+                defVol.appendChild(defVolBtn);
+                container.appendChild(defVol);
+
+                const realTimeUp = document.createElement("div");
+                realTimeUp.textContent = "Real-Time saves"; // Initial text
+                realTimeUp.style.position = "relative"; // Set position to relative
+                realTimeUp.style.textAlign = "center";
+                realTimeUp.style.lineHeight = "40px"; // Center text vertically
+                realTimeUp.style.marginTop = "10px";
+                realTimeUp.style.width = "calc(100% - 80px)";
+                realTimeUp.style.height = "40px";
+                realTimeUp.style.background = "#222";
+                realTimeUp.style.borderRadius = "10px 0px 0px 10px";
+                realTimeUp.style.userSelect = "none";
+
+                const realTimeUpBtn = document.createElement("a");
+                realTimeUpBtn.textContent = "Enabled"; // Initial text
+                realTimeUpBtn.style.position = "absolute";
+                realTimeUpBtn.style.right = "-80px";
+                realTimeUpBtn.style.width = "80px";
+                realTimeUpBtn.style.height = "40px";
+                realTimeUpBtn.style.background = "#383838";
+                realTimeUpBtn.style.borderRadius = "0px 10px 10px 0px";
+                realTimeUpBtn.style.color = "#00FF00"; // Green color for "enabled" text
+                realTimeUpBtn.style.textAlign = "center";
+                realTimeUpBtn.style.lineHeight = "40px"; // Center text vertically
+                realTimeUpBtn.style.cursor = "pointer";
+                realTimeUpBtn.style.userSelect = "none";
+
+                realTimeUpBtn.addEventListener("click", () => {
+                    toggleButtonState(realTimeUpBtn, 'realTimeUpState');
+                    checkRealTimeUpState();
+                });
+
+                let realTimeUpState = localStorage.getItem('realTimeUpState');
+
+                if (realTimeUpState === "disabled") {
+                    realTimeUpBtn.textContent = "Disabled";
+                    realTimeUpBtn.style.color = "#FF0000"; // Red color for "disabled" text
+                }
+
+                realTimeUp.appendChild(realTimeUpBtn);
+                container.appendChild(realTimeUp);
+
+                const savingStateContainer = document.createElement("div");
+                savingStateContainer.textContent = "Video Time Tracking"; // Initial text
+                savingStateContainer.style.position = "relative"; // Set position to relative
+                savingStateContainer.style.textAlign = "center";
+                savingStateContainer.style.lineHeight = "40px"; // Center text vertically
+                savingStateContainer.style.marginTop = "10px";
+                savingStateContainer.style.width = "calc(100% - 80px)";
+                savingStateContainer.style.height = "40px";
+                savingStateContainer.style.background = "#222";
+                savingStateContainer.style.borderRadius = "10px 0px 0px 10px";
+                savingStateContainer.style.userSelect = "none";
+
+                const savingStateButton = document.createElement("a");
+                savingStateButton.textContent = "Enabled"; // Initial text
+                savingStateButton.style.position = "absolute";
+                savingStateButton.style.right = "-80px";
+                savingStateButton.style.width = "80px";
+                savingStateButton.style.height = "40px";
+                savingStateButton.style.background = "#383838";
+                savingStateButton.style.borderRadius = "0px 10px 10px 0px";
+                savingStateButton.style.color = "#00FF00"; // Green color for "enabled" text
+                savingStateButton.style.textAlign = "center";
+                savingStateButton.style.lineHeight = "40px"; // Center text vertically
+                savingStateButton.style.cursor = "pointer";
+                savingStateButton.style.userSelect = "none";
+
+                savingStateButton.addEventListener("click", () => {
+                    toggleButtonState(savingStateButton, 'savingState');
+                });
+
+                let savingState = localStorage.getItem('savingState');
+
+                if (savingState === "disabled") {
+                    savingStateButton.textContent = "Disabled";
+                    savingStateButton.style.color = "#FF0000"; // Red color for "disabled" text
+                }
+
+                savingStateContainer.appendChild(savingStateButton);
+                container.appendChild(savingStateContainer);
+
+                document.body.appendChild(root);
+                guiContainer = root;
             }
-        });
 
-        let defVolState = localStorage.getItem('defVolState');
+            // Function to toggle button state and save it to localStorage
+            function toggleButtonState(button, key) {
+                if (button.textContent === "Enabled") {
+                    button.textContent = "Disabled";
+                    button.style.color = "#FF0000"; // Red color for "disabled" text
+                    localStorage.setItem(key, "disabled");
+                    console.log("Setting", key, "to 'disabled'.");
+                } else {
+                    button.textContent = "Enabled";
+                    button.style.color = "#00FF00"; // Green color for "enabled" text
+                    localStorage.setItem(key, "enabled");
+                    console.log("Setting", key, "to 'enabled'.");
+                }
+            }
 
-        // Set initial button states
-        if (defVolState === "disabled") {
-            defVolBtn.textContent = "Disabled";
-            defVolBtn.style.color = "#FF0000"; // Red color for "disabled" text
+            // Function to set the volume
+            function setVolume(volumeLevel) {
+                // Select all audio and video elements on the page
+                const mediaElements = document.querySelectorAll("audio, video");
+
+                // Loop through each media element
+                mediaElements.forEach(element => {
+                    // Set the volume level
+                    element.volume = volumeLevel;
+                });
+                console.log("Volume set to:", volumeLevel);
+            }
+
+            if (videoElement != null) {
+                videoElement.addEventListener('volumechange', handleVolumeChange);
+            }
+            else {
+                console.warn("No video element found. Volume change handler not attached.");
+            }
+
+            function handleVolumeChange() {
+                const newVolumeLevel = videoElement.volume;
+                localStorage.setItem('volumeLevel', newVolumeLevel.toString());
+                console.log("Volume changed:", newVolumeLevel);
+            }
+
+            // Register user menu command to open the UI
+            GM_registerMenuCommand("Open/Close Settings", () => {
+                createUI();
+            });
         }
-
-        defVol.appendChild(defVolBtn);
-        container.appendChild(defVol);
-
-        const realTimeUp = document.createElement("div");
-        realTimeUp.textContent = "Real-Time saves"; // Initial text
-        realTimeUp.style.position = "relative"; // Set position to relative
-        realTimeUp.style.textAlign = "center";
-        realTimeUp.style.lineHeight = "40px"; // Center text vertically
-        realTimeUp.style.marginTop = "10px";
-        realTimeUp.style.width = "calc(100% - 80px)";
-        realTimeUp.style.height = "40px";
-        realTimeUp.style.background = "#222";
-        realTimeUp.style.borderRadius = "10px 0px 0px 10px";
-        realTimeUp.style.userSelect = "none";
-
-        const realTimeUpBtn = document.createElement("a");
-        realTimeUpBtn.textContent = "Enabled"; // Initial text
-        realTimeUpBtn.style.position = "absolute";
-        realTimeUpBtn.style.right = "-80px";
-        realTimeUpBtn.style.width = "80px";
-        realTimeUpBtn.style.height = "40px";
-        realTimeUpBtn.style.background = "#383838";
-        realTimeUpBtn.style.borderRadius = "0px 10px 10px 0px";
-        realTimeUpBtn.style.color = "#00FF00"; // Green color for "enabled" text
-        realTimeUpBtn.style.textAlign = "center";
-        realTimeUpBtn.style.lineHeight = "40px"; // Center text vertically
-        realTimeUpBtn.style.cursor = "pointer";
-        realTimeUpBtn.style.userSelect = "none";
-
-        realTimeUpBtn.addEventListener("click", () => {
-            toggleButtonState(realTimeUpBtn, 'realTimeUpState');
-            checkRealTimeUpState();
-        });
-
-        let realTimeUpState = localStorage.getItem('realTimeUpState');
-
-        if (realTimeUpState === "disabled") {
-            realTimeUpBtn.textContent = "Disabled";
-            realTimeUpBtn.style.color = "#FF0000"; // Red color for "disabled" text
-        }
-
-        realTimeUp.appendChild(realTimeUpBtn);
-        container.appendChild(realTimeUp);
-
-        const savingStateContainer = document.createElement("div");
-        savingStateContainer.textContent = "Video Time Tracking"; // Initial text
-        savingStateContainer.style.position = "relative"; // Set position to relative
-        savingStateContainer.style.textAlign = "center";
-        savingStateContainer.style.lineHeight = "40px"; // Center text vertically
-        savingStateContainer.style.marginTop = "10px";
-        savingStateContainer.style.width = "calc(100% - 80px)";
-        savingStateContainer.style.height = "40px";
-        savingStateContainer.style.background = "#222";
-        savingStateContainer.style.borderRadius = "10px 0px 0px 10px";
-        savingStateContainer.style.userSelect = "none";
-
-        const savingStateButton = document.createElement("a");
-        savingStateButton.textContent = "Enabled"; // Initial text
-        savingStateButton.style.position = "absolute";
-        savingStateButton.style.right = "-80px";
-        savingStateButton.style.width = "80px";
-        savingStateButton.style.height = "40px";
-        savingStateButton.style.background = "#383838";
-        savingStateButton.style.borderRadius = "0px 10px 10px 0px";
-        savingStateButton.style.color = "#00FF00"; // Green color for "enabled" text
-        savingStateButton.style.textAlign = "center";
-        savingStateButton.style.lineHeight = "40px"; // Center text vertically
-        savingStateButton.style.cursor = "pointer";
-        savingStateButton.style.userSelect = "none";
-
-        savingStateButton.addEventListener("click", () => {
-            toggleButtonState(savingStateButton, 'savingState');
-        });
-
-        let savingState = localStorage.getItem('savingState');
-
-        if (savingState === "disabled") {
-            savingStateButton.textContent = "Disabled";
-            savingStateButton.style.color = "#FF0000"; // Red color for "disabled" text
-        }
-
-        savingStateContainer.appendChild(savingStateButton);
-        container.appendChild(savingStateContainer);
-
-        document.body.appendChild(root);
-        guiContainer = root;
-    }
-
-          // Function to toggle button state and save it to localStorage
-          function toggleButtonState(button, key) {
-              if (button.textContent === "Enabled") {
-                  button.textContent = "Disabled";
-                  button.style.color = "#FF0000"; // Red color for "disabled" text
-                  localStorage.setItem(key, "disabled");
-                  console.log("Setting", key, "to 'disabled'.");
-              } else {
-                  button.textContent = "Enabled";
-                  button.style.color = "#00FF00"; // Green color for "enabled" text
-                  localStorage.setItem(key, "enabled");
-                  console.log("Setting", key, "to 'enabled'.");
-              }
-          }
-
-          // Function to set the volume
-          function setVolume(volumeLevel) {
-              // Select all audio and video elements on the page
-              const mediaElements = document.querySelectorAll("audio, video");
-
-              // Loop through each media element
-              mediaElements.forEach(element => {
-                  // Set the volume level
-                  element.volume = volumeLevel;
-              });
-              console.log("Volume set to:", volumeLevel);
-          }
-
-          if (videoElement != null) {
-              videoElement.addEventListener('volumechange', handleVolumeChange);
-          }
-          else {
-              console.warn("No video element found. Volume change handler not attached.");
-          }
-
-          function handleVolumeChange() {
-              const newVolumeLevel = videoElement.volume;
-              localStorage.setItem('volumeLevel', newVolumeLevel.toString());
-              console.log("Volume changed:", newVolumeLevel);
-          }
-
-          // Register user menu command to open the UI
-          GM_registerMenuCommand("Open/Close Settings", () => {
-              createUI();
-          });
-      }
     }, 1);
 })();
