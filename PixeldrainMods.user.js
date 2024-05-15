@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Pixeldrain Mods
 // @namespace    http://tampermonkey.net/
-// @version      0.10.0
+// @version      0.9.1
 // @description  Saves the current time of a video on Pixeldrain.com and does other stuff as well
 // @author       fides
 // @match        https://pixeldrain.com/u/*
