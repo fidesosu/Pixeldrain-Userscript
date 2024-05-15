@@ -2,7 +2,7 @@
 
 This UserScript, enhances the functionality of [Pixeldrain.com](https://pixeldrain.com) by providing additional features related to video playback.
 
-Since `10 May 2024` the script supports [Patreon.com](https://www.patreon.com) too.
+Since `10 May 2024` the script "supports" [Patreon.com](https://www.patreon.com) too.
 
 ## Features
 
