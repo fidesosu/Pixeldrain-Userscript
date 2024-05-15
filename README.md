@@ -1,4 +1,4 @@
-# Pixeldrain Enhancer
+# Pixeldrain Mods
 
 This UserScript, enhances the functionality of [Pixeldrain.com](https://pixeldrain.com) by providing additional features related to video playback.
 
