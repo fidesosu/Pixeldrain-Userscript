@@ -24,8 +24,8 @@ Since `10 May 2024` the script "supports" [Patreon.com](https://www.patreon.com)
 
 ## Work in Progress (WIP)
 
-- Some features are missing from the UI, but they will be added in the future.
+- Pinnable ui
 
 ## Possible Future Features
 
-- Pinnable ui (when pinned it remembers the spot on the screen where it was pinned and when reopened it opens in the pinned location)
+- Nothing right now.
